@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Paredes
+  - Trap
   layers:
   - Default
   - TransparentFX
@@ -13,7 +14,7 @@ TagManager:
   - Paredes
   - Water
   - UI
-  - 
+  - Trap
   - 
   - 
   - 

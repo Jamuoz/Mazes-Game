@@ -441,7 +441,7 @@ public class FirstPersonController : MonoBehaviour
         #endregion
     }
 
-    // Sets isGrounded based on a raycast sent straigth down from the player object
+    // saber si el jugador esta en el suelo 
     private void CheckGround()
     {
         Vector3 origin = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * .5f), transform.position.z);
@@ -461,14 +461,14 @@ public class FirstPersonController : MonoBehaviour
 
     private void Jump()
     {
-        // Adds force to the player rigidbody to jump
+        // añadir fuerza al salto
         if (isGrounded)
         {
             rb.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
             isGrounded = false;
         }
 
-        // When crouched and using toggle system, will uncrouch for a jump
+        // saltar mientras corres
         if(isCrouched && !holdToCrouch)
         {
             Crouch();

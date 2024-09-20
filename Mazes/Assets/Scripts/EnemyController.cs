@@ -5,132 +5,72 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    // Variables de estado
-    public float maxHealth = 50f;
-    public float currentHealth;
-    public float maxStamina = 50f;
-    public float currentStamina;
-
-    // Variables de combate
-    public float attackRange = 2f;
+    public Transform[] patrolPoints;  // Puntos de patrulla
+    public float patrolSpeed = 3.5f;
+    public float chaseSpeed = 5f;
     public float detectionRange = 10f;
-    public float attackDamage = 10f;
-    public float attackCooldown = 1.5f;
-    private float lastAttackTime;
+    public float loseRange = 15f;
+    public float waitTime = 2f;  // Tiempo que espera antes de continuar patrullando
+    public Transform player;
 
-    // Referencia al jugador
-    private GameObject player;
-
-    // Layer para las paredes
-    public LayerMask obstacleMask;
-
-    // Referencia al NavMeshAgent
+    private int currentPointIndex = 0;
     private NavMeshAgent agent;
-
-    // Puntos de patrullaje
-    public GameObject[] paradas;
-    public GameObject ParadasParent;
-    public int RandomLOcation;
-    public int numParada;
-    public float TimeToPatru;
+    private float waitTimer;
+    private bool isChasing = false;
 
     void Start()
     {
-        currentHealth = maxHealth;
-        currentStamina = maxStamina;
-        player = GameObject.FindWithTag("Player");
         agent = GetComponent<NavMeshAgent>();
-        RandomLOcation = 1;
-
-        // Inicializa y llena la matriz paradas
-        int childCount = ParadasParent.transform.childCount;
-        paradas = new GameObject[childCount];
-        for (int i = 0; i < childCount; i++)
-        {
-            paradas[i] = ParadasParent.transform.GetChild(i).gameObject;
-        }
+        agent.speed = patrolSpeed;
+        // Inicia el patrullaje hacia el primer punto
+        agent.destination = patrolPoints[currentPointIndex].position;
     }
 
     void Update()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= detectionRange && CanSeePlayer())
+        if (distanceToPlayer <= detectionRange)
         {
-            ChasePlayer();
+            // Perseguir al jugador
+            isChasing = true;
+            agent.speed = chaseSpeed;
+            agent.destination = player.position;
+        }
+        else if (distanceToPlayer > loseRange)
+        {
+            // Dejar de perseguir y volver a patrullar
+            isChasing = false;
+            agent.speed = patrolSpeed;
+            Patrol();
+        }
+        else if (isChasing)
+        {
+            // Seguir persiguiendo si el jugador está dentro del rango de detección pero no ha salido del rango de perder
+            agent.destination = player.position;
+        }
 
-            if (distanceToPlayer <= attackRange && Time.time >= lastAttackTime + attackCooldown)
+        // Comportamiento de patrulla si no está persiguiendo
+        if (!isChasing)
+        {
+            Patrol();
+        }
+    }
+
+    void Patrol()
+    {
+        // Si ha llegado al punto de patrullaje actual y no está persiguiendo al jugador
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        {
+            waitTimer += Time.deltaTime;
+
+            if (waitTimer >= waitTime)
             {
-                AttackPlayer();
-                lastAttackTime = Time.time;
+                // Selecciona un punto de patrullaje aleatorio
+                currentPointIndex = Random.Range(0, patrolPoints.Length);
+                agent.destination = patrolPoints[currentPointIndex].position;
+                waitTimer = 0f;  // Reinicia el temporizador de espera
             }
         }
-        else
-        {
-            TimeToPatru += Time.deltaTime;
-            if (TimeToPatru >= 10)
-            {
-                TimeToPatru = 0;
-                agent.SetDestination(paradas[numParada].transform.position); // Mueve al enemigo a la siguiente parada
-
-                // Actualiza numParada
-                if (numParada >= paradas.Length - 1)
-                {
-                    numParada = 0;
-                }
-                else
-                {
-                    numParada++;
-                }
-            }
-        }
-    }
-
-    void ChasePlayer()
-    {
-        // Usar NavMeshAgent para moverse hacia el jugador
-        agent.SetDestination(player.transform.position);
-    }
-
-    void AttackPlayer()
-    {
-        // Lógica para atacar al jugador
-        player.GetComponent<PlayerController>().TakeDamage(attackDamage);
-    }
-
-    // Método para verificar si el enemigo puede ver al jugador
-    bool CanSeePlayer()
-    {
-        Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;
-        Ray ray = new Ray(transform.position, directionToPlayer);
-        RaycastHit hit;
-
-        // Realizar el raycast
-        if (Physics.Raycast(ray, out hit, detectionRange, obstacleMask))
-        {
-            // Si el raycast golpea al jugador y no a una pared
-            if (hit.transform.CompareTag("Player"))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // Método para recibir daño
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    void Die()
-    {
-        // Lógica para manejar la muerte del enemigo
-        Destroy(gameObject);
     }
 }
