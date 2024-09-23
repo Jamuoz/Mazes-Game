@@ -8,14 +8,17 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
     public float maxStamina = 100f;
-    public float currentStamina;
-    public float mentalState = 100f; // Estado mental, entre 0 y 100
+    public float currentStamina;  
+    public float maxMentalState=100;// Estado mental, entre 0 y 100
+    public float currentmentalState;
 
     // Variables de movimiento
     public float moveSpeed = 5f;
+    private float RunSpeed;
+    private float NormalSpeed;
+    public float runSpeedMultiplier = 2f; // Multiplicador para velocidad al correr
     public float jumpForce = 10f;
     private bool isGrounded;
-    private bool isRunning;
 
     private Rigidbody rb;
 
@@ -26,10 +29,11 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        isRunning = false;
         rb = GetComponent<Rigidbody>();
         currentHealth = maxHealth;
         currentStamina = maxStamina;
+        currentmentalState = maxMentalState;
+        SpeedUpdate();
 
         // Ocultar y bloquear el cursor
         Cursor.lockState = CursorLockMode.Locked;
@@ -39,52 +43,28 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
-        //Jump();
+        Jump();
         LookAround();
-
-        // Ejemplo de desgaste de resistencia y salud con el tiempo
-        if (isRunning)
-        {
-            currentStamina -= Time.deltaTime * 1f;
-            if (currentStamina <= 0)
-            {
-                mentalState -= Time.deltaTime * 4f;
-                if (mentalState <= 0)
-                {
-                    currentHealth -= Time.deltaTime * 2f;
-                }
-            }
-        }
-        else
-        {
-            moveSpeed = 5;
-
-            if (currentStamina<maxStamina)
-            {
-                currentStamina += Time.deltaTime * 1f;
-                
-            }
-        }
+        HandleStaminaAndHealth();
     }
 
     void Move()
     {
         float moveX = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
         float moveZ = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
-
+        
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         rb.MovePosition(transform.position + move);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0)
         {
-            Run();
+            moveSpeed = RunSpeed;
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        else
         {
-            isRunning = false;
-            moveSpeed = 5;
+            moveSpeed = NormalSpeed;
+            SpeedUpdate();
         }
-       
     }
 
     void Jump()
@@ -92,6 +72,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            if (currentStamina >= 10f)
+            {
+                currentStamina -= 5f;
+            }
         }
     }
 
@@ -107,6 +91,40 @@ public class PlayerController : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Limitar la rotación en el eje X
 
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+    }
+
+    void SpeedUpdate()
+    {
+        RunSpeed = moveSpeed * runSpeedMultiplier;
+        NormalSpeed = moveSpeed;
+    }
+    void HandleStaminaAndHealth()
+    {
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina >= 0)
+        {
+            currentStamina -= Time.deltaTime * 10f;
+        }
+        else if (currentStamina < maxStamina)
+        {
+            currentStamina += Time.deltaTime * 5f;
+        }
+
+        if (currentStamina <= 0 && currentmentalState>0)
+        {
+            currentmentalState -= Time.deltaTime * 4f;
+            if (currentmentalState <= 0)
+            {
+                currentHealth -= Time.deltaTime * 10f;
+                if (currentHealth <= 0)
+                {
+                    Die();
+                }
+            }
+        }
+        else if(currentmentalState<maxMentalState)
+        {
+            currentmentalState += Time.deltaTime * 0.5f;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -137,20 +155,9 @@ public class PlayerController : MonoBehaviour
 
     public void AdjustMentalState(float adjustment)
     {
-        mentalState += adjustment;
-        mentalState = Mathf.Clamp(mentalState, 0f, 100f);
+        currentmentalState = Mathf.Clamp(currentmentalState + adjustment, 0f, 100f);
     }
 
-    public void Run()
-    {
-        isRunning = true;
-        if (isGrounded)
-        {
-            isRunning = true;
-            moveSpeed += 5;
-        }
-        
-    }
     void Die()
     {
         // Lógica para manejar la muerte del personaje
