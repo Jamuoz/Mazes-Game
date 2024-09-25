@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public enum TrapsSelect { Pinchos, Corredor, EnemySpawn }
+public enum TrapType { Pinchos, Lanzallamas, Lasers, EnemySpawn }
 public class TrampasManag : MonoBehaviour
 {
     #region variables
-    public GameObject[] EnemysCount;
+    public GameObject[] EnemysCount = GameObject.FindGameObjectsWithTag("Enemy");
     public GameObject[] Traps;
-    public GameObject[] Walls;
     public GameObject enemytospawn;
     public bool Active,Finish;
     //public float RangeActivation;
@@ -27,6 +26,7 @@ public class TrampasManag : MonoBehaviour
         DOTween.Init();
         Active = false;
         Finish = false;
+        
     }
 
     // Update is called once per frame
@@ -48,21 +48,24 @@ public class TrampasManag : MonoBehaviour
 
     
 
-    public void ActiveEnemySpawnTrap()
+    public void ActiveEnemySpawnTrap(GameObject Trap,Transform posi)
     {
-        Traps[2].transform.position = Walls[2].transform.position;
+        
     }
 
-    public void ActiveCorredorTrap(Transform star,Transform end,GameObject trap)
+    public void ActiveCorredorTrap(GameObject Trap, Transform posi)
     {
-        Traps[1].transform.position = Walls[1].transform.position;
-
+        
     }
 
-    public void ActivePinchosTrap()
+    public void ActivePinchosTrap(GameObject Trap, Transform posi)
     {
-        Traps[0].transform.position = Walls[0].transform.position;
-        Traps[0].transform.DOMoveY(Traps[0].transform.position.y -2,4);
+        
+    }
+
+    public void ActiveFireTrap(GameObject Trap, Transform posi)
+    {
+
     }
     #endregion
 }

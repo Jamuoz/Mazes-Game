@@ -18,13 +18,7 @@ public class UiManager : MonoBehaviour
 
     // variables
     public float delayDuration;
-    float VIdaEnUi;
-
-    //void Start()
-    //{
-    //    // Llamamos a la función UpdateUI para que se ejecute continuamente
-    //    UpdateUI();
-    //}
+    
 
     private void Update()
     {
@@ -34,17 +28,12 @@ public class UiManager : MonoBehaviour
     void UpdateUI()
     {
         Vida.fillAmount = Player.currentHealth / Player.maxHealth;
-        VIdaEnUi=Player.currentHealth;
         Estamina.fillAmount = Player.currentStamina / Player.maxStamina;
         EstadoMental.fillAmount = Player.currentmentalState / Player.maxMentalState;
-        if (VIdaEnUi < Player.currentHealth)
+        if (DelayVida.fillAmount > Vida.fillAmount)
         {
-            //Invoke(FadeUpdate())
             FadeUpdate();
         }
-
-        // Llama de nuevo a esta función en el siguiente frame
-        //Invoke("UpdateUI", Time.deltaTime);
     }
 
     void FadeUpdate()

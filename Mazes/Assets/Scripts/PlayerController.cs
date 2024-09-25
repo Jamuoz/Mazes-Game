@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
             moveSpeed = NormalSpeed;
             SpeedUpdate();
         }
+        
     }
 
     void Jump()
@@ -100,30 +101,35 @@ public class PlayerController : MonoBehaviour
     }
     void HandleStaminaAndHealth()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && currentStamina >= 0)
+        // Verifica si el jugador está presionando Shift y tiene alguna entrada de movimiento
+        if (Input.GetKey(KeyCode.LeftShift) && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
-            currentStamina -= Time.deltaTime * 10f;
+            if (currentStamina > 0)
+            {
+                currentStamina -= Time.deltaTime * 10f;  
+            }
         }
         else if (currentStamina < maxStamina)
         {
-            currentStamina += Time.deltaTime * 5f;
+            currentStamina += Time.deltaTime * 5f;  
         }
 
-        if (currentStamina <= 0 && currentmentalState>0)
+        // Si la estamina está vacía, empieza a reducir el estado mental
+        if (currentStamina <= 0 && currentmentalState > 0)
         {
             currentmentalState -= Time.deltaTime * 4f;
             if (currentmentalState <= 0)
             {
-                currentHealth -= Time.deltaTime * 10f;
+                currentHealth -= Time.deltaTime * 10f;  // Reduce salud si el estado mental se vacía
                 if (currentHealth <= 0)
                 {
                     Die();
                 }
             }
         }
-        else if(currentmentalState<maxMentalState)
+        else if (currentmentalState < maxMentalState)
         {
-            currentmentalState += Time.deltaTime * 0.5f;
+            currentmentalState += Time.deltaTime * 0.5f;  // Regenera estado mental lentamente
         }
     }
 
