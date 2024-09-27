@@ -50,23 +50,31 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        float moveX = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-        float moveZ = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
-        
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        rb.MovePosition(transform.position + move);
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
+
+        Vector3 moveDirection = (transform.right * moveX + transform.forward * moveZ).normalized;
 
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0)
         {
-            moveSpeed = RunSpeed;
+            moveSpeed = RunSpeed; 
         }
         else
         {
             moveSpeed = NormalSpeed;
-            SpeedUpdate();
+            
         }
-        
+        //if (moveDirection.magnitude >= 0.1f) 
+        //{
+        //    rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);  
+        //}
+        //else
+        //{
+        //    rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        //}
+        rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
     }
+
 
     void Jump()
     {

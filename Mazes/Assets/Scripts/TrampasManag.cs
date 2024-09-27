@@ -8,7 +8,7 @@ public enum TrapType { Pinchos, Lanzallamas, Lasers, EnemySpawn }
 public class TrampasManag : MonoBehaviour
 {
     #region variables
-    public GameObject[] EnemysCount = GameObject.FindGameObjectsWithTag("Enemy");
+    public GameObject[] EnemysCount;
     public GameObject[] Traps;
     public GameObject enemytospawn;
     public bool Active,Finish;
@@ -24,6 +24,7 @@ public class TrampasManag : MonoBehaviour
     void Start()
     {
         DOTween.Init();
+        EnemysCount = GameObject.FindGameObjectsWithTag("Enemy");
         Active = false;
         Finish = false;
         
