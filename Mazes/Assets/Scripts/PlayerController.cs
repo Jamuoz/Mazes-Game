@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Move();
-        Jump();
+        //Jump();
         LookAround();
         HandleStaminaAndHealth();
     }
@@ -64,15 +64,15 @@ public class PlayerController : MonoBehaviour
             moveSpeed = NormalSpeed;
             
         }
-        //if (moveDirection.magnitude >= 0.1f) 
-        //{
-        //    rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);  
-        //}
-        //else
-        //{
-        //    rb.velocity = new Vector3(0, rb.velocity.y, 0);
-        //}
-        rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
+        if (moveDirection.magnitude >= 0.1f)
+        {
+            rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
+        }
+        else
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        }
+        //rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
     }
 
 
@@ -158,10 +158,10 @@ public class PlayerController : MonoBehaviour
     }
 
     // Métodos para modificar la salud y el estado mental
-    public void TakeDamage(float damage)
+    public void AdjustHealth(float value)
     {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
+        currentHealth = Mathf.Clamp(currentHealth + value, 0f, 100f);//resto daño a la vida sin dejar que baje de 0
+        if (currentHealth < 0) 
         {
             Die();
         }

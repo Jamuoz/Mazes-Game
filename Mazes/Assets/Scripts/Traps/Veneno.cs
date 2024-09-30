@@ -13,7 +13,7 @@ public class Veneno : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {
-                player.TakeDamage(damage * Time.deltaTime);
+                player.AdjustHealth(-damage * Time.deltaTime);
             }
         }
         

@@ -26,14 +26,14 @@ public class PinchosMov : MonoBehaviour
             PlayerController player = other.GetComponent<PlayerController>();
             if (player != null)
             {
-                player.TakeDamage(damage * Time.deltaTime);
+                player.AdjustHealth(-damage * Time.deltaTime);
             }
         }
 
     }
 
     // Corutina para mover el láser hacia adelante y hacia atrás
-    private IEnumerator MoveLaser()
+    private IEnumerator MovePinchos()
     {
         while (gameObject.activeSelf)
         {
@@ -50,7 +50,7 @@ public class PinchosMov : MonoBehaviour
     private void OnEnable()
     {
         transform.position = initialPosition.position;
-        StartCoroutine(MoveLaser());
+        StartCoroutine(MovePinchos());
     }
 
     private void OnDisable()

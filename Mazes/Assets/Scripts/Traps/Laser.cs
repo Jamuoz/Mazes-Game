@@ -42,7 +42,7 @@ public class Laser : MonoBehaviour
         PlayerController player = other.GetComponent<PlayerController>();
         if (player != null)
         {
-            player.TakeDamage(damage);
+            player.AdjustHealth(-damage);
         }
     }
 
