@@ -33,28 +33,26 @@ public class PinchosMov : MonoBehaviour
     }
 
     // Corutina para mover el láser hacia adelante y hacia atrás
-    private IEnumerator MovePinchos()
+    private void MovePinchos()
     {
         while (gameObject.activeSelf)
         {
-            // Mover hacia adelante
-            transform.DOMoveY(initialPosition.position.y - metros, tiempoRecorrido);
-            yield return new WaitForSeconds(tiempoEspera);
+            
+            transform.DOMoveY(initialPosition.position.y + metros, tiempoRecorrido)
+                .SetLoops(-1, LoopType.Yoyo) //invierte el movimiento
+                .SetDelay(tiempoEspera);
 
-            // Mover hacia atrás
-            transform.DOMoveY(initialPosition.position.y, tiempoRecorrido);
-            yield return new WaitForSeconds(tiempoEspera);
         }
     }
     
     private void OnEnable()
     {
         transform.position = initialPosition.position;
-        StartCoroutine(MovePinchos());
+        MovePinchos();
     }
 
     private void OnDisable()
     {
-        StopAllCoroutines();
+        transform.DOKill() ;
     }
 }

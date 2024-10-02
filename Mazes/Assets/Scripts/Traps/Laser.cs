@@ -9,32 +9,26 @@ public class Laser : MonoBehaviour
     public float tiempoRecorrido = 2f;
     public float tiempoEspera = 5f;
     public float damage = 5f;
+    public bool Hori;
 
-    public Transform initialPosition;  // Guardar la posición inicial
+    public Transform initialPosition;  
     private void Start()
     {
         if (initialPosition == null)
         {
             initialPosition.position = transform.position;
         }
-        // Guardar la posición inicial una sola vez
         
     }
-
-    // Se llama cada vez que el objeto se activa (es encendido)
     private void OnEnable()
     {
-        // Reiniciar la posición inicial
         transform.position = initialPosition.position;
-
-        // Empezar el movimiento del láser
-        StartCoroutine(MoveLaser());
+        StartLaserMovement(Hori);
     }
 
     private void OnDisable()
     {
-        // Detener la corutina cuando el objeto se desactiva
-        StopAllCoroutines();
+        transform.DOKill();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -47,17 +41,21 @@ public class Laser : MonoBehaviour
     }
 
     // Corutina para mover el láser hacia adelante y hacia atrás
-    private IEnumerator MoveLaser()
+    private void StartLaserMovement(bool dire)
     {
-        while (gameObject.activeSelf)
+        if (!dire)
         {
-            // Mover hacia adelante
-            transform.DOMoveZ(initialPosition.position.z + metros, tiempoRecorrido);
-            yield return new WaitForSeconds(tiempoEspera);
-
-            // Mover hacia atrás
-            transform.DOMoveZ(initialPosition.position.z, tiempoRecorrido);
-            yield return new WaitForSeconds(tiempoEspera);
+            // Mover 
+            transform.DOMoveZ(initialPosition.position.z + metros, tiempoRecorrido)
+                .SetLoops(-1, LoopType.Yoyo) //invierte el movimiento
+                .SetDelay(tiempoEspera); // Hace una pausa antes de invertir el movimiento
+        }
+        else
+        {
+            
+            transform.DOMoveX(initialPosition.position.x + metros, tiempoRecorrido)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetDelay(tiempoEspera); 
         }
     }
 }
