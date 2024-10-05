@@ -9086,6 +9086,7 @@ GameObject:
   - component: {fileID: 6697009332453295064}
   - component: {fileID: 3954408188159325303}
   - component: {fileID: 6988990086557842096}
+  - component: {fileID: 2932765638259321307}
   m_Layer: 0
   m_Name: PinchosQuietos
   m_TagString: Untagged
@@ -9103,8 +9104,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 0.15, z: 5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 0.3, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5879042124931361042}
   - {fileID: 8968227294418773189}
@@ -9184,6 +9185,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.95557386, y: 9.048012, z: 0.9520203}
   m_Center: {x: 0.0008885384, y: 4.024006, z: -0.0026657104}
+--- !u!114 &2932765638259321307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663354208106317449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff9ed8afdc2f244eaf4033c2cdb7f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &7915540368559149794
 GameObject:
   m_ObjectHideFlags: 0

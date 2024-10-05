@@ -15,10 +15,11 @@ public class PinchosMov : MonoBehaviour
     {
         if (initialPosition == null)
         {
+            initialPosition = new GameObject("Initial Position").transform;
             initialPosition.position = transform.position;
         }
-
     }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -29,30 +30,31 @@ public class PinchosMov : MonoBehaviour
                 player.AdjustHealth(-damage * Time.deltaTime);
             }
         }
-
     }
 
-    // Corutina para mover el láser hacia adelante y hacia atrás
-    private void MovePinchos()
+    // Corutina para mover los pinchos hacia adelante y hacia atrás
+    private IEnumerator MovePinchos()
     {
         while (gameObject.activeSelf)
         {
-            
-            transform.DOMoveY(initialPosition.position.y + metros, tiempoRecorrido)
-                .SetLoops(-1, LoopType.Yoyo) //invierte el movimiento
-                .SetDelay(tiempoEspera);
-
+            yield return new WaitForSeconds(tiempoEspera);
+            yield return transform.DOMoveY(initialPosition.position.y - metros, tiempoRecorrido).WaitForCompletion();
+            yield return new WaitForSeconds(tiempoEspera);
+            yield return transform.DOMoveY(initialPosition.position.y, tiempoRecorrido).WaitForCompletion();
+            yield return new WaitForSeconds(tiempoEspera);
         }
     }
-    
+
     private void OnEnable()
     {
         transform.position = initialPosition.position;
-        MovePinchos();
+        StartCoroutine(MovePinchos()); 
     }
 
     private void OnDisable()
     {
-        transform.DOKill() ;
+        transform.DOKill(); 
+        StopCoroutine(MovePinchos()); 
     }
+
 }

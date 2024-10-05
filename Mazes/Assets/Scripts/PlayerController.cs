@@ -8,19 +8,20 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
     public float maxStamina = 100f;
-    public float currentStamina;  
-    public float maxMentalState=100;// Estado mental, entre 0 y 100
+    public float currentStamina;
+    public float maxMentalState = 100f;
     public float currentmentalState;
 
     // Variables de movimiento
     public float moveSpeed = 5f;
     private float RunSpeed;
     private float NormalSpeed;
-    public float runSpeedMultiplier = 2f; // Multiplicador para velocidad al correr
+    public float runSpeedMultiplier = 2f; 
     public float jumpForce = 10f;
     private bool isGrounded;
 
     private Rigidbody rb;
+    private Collider playerCollider; 
 
     // Variables para la cámara
     public Transform playerCamera;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerCollider = GetComponent<Collider>(); 
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         currentmentalState = maxMentalState;
@@ -42,8 +44,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //CheckIfGrounded(); 
         Move();
-        //Jump();
+        //Jump(); 
         LookAround();
         HandleStaminaAndHealth();
     }
@@ -57,13 +60,23 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0)
         {
-            moveSpeed = RunSpeed; 
+            moveSpeed = RunSpeed;
         }
         else
         {
             moveSpeed = NormalSpeed;
-            
         }
+
+        // Proyectar el movimiento para evitar que se pegue a las paredes
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, moveDirection, out hit, 0.5f))
+        {
+            if (hit.collider.CompareTag("Paredes"))
+            {
+                moveDirection = Vector3.ProjectOnPlane(moveDirection, hit.normal); 
+            }
+        }
+
         if (moveDirection.magnitude >= 0.1f)
         {
             rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
@@ -72,9 +85,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
-        //rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
     }
-
 
     void Jump()
     {
@@ -107,19 +118,20 @@ public class PlayerController : MonoBehaviour
         RunSpeed = moveSpeed * runSpeedMultiplier;
         NormalSpeed = moveSpeed;
     }
+
     void HandleStaminaAndHealth()
     {
-        // Verifica si el jugador está presionando Shift y tiene alguna entrada de movimiento
+        
         if (Input.GetKey(KeyCode.LeftShift) && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
         {
             if (currentStamina > 0)
             {
-                currentStamina -= Time.deltaTime * 10f;  
+                currentStamina -= Time.deltaTime * 10f;
             }
         }
         else if (currentStamina < maxStamina)
         {
-            currentStamina += Time.deltaTime * 5f;  
+            currentStamina += Time.deltaTime * 5f;
         }
 
         // Si la estamina está vacía, empieza a reducir el estado mental
@@ -140,28 +152,26 @@ public class PlayerController : MonoBehaviour
             currentmentalState += Time.deltaTime * 0.5f;  // Regenera estado mental lentamente
         }
     }
-
-    private void OnCollisionEnter(Collision collision)
+    void CheckIfGrounded()
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
+        // Define la posición desde la cual lanzar el rayo (desde el centro inferior del collider)
+        Vector3 bottomCenter = new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y, playerCollider.bounds.center.z);
+        float distanceToGround = 0.2f;
+        isGrounded = Physics.Raycast(bottomCenter, Vector3.down, distanceToGround);
+        
     }
+    
 
-    private void OnCollisionExit(Collision collision)
+    void Die()
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
+        Debug.Log("Player has died.");
     }
 
     // Métodos para modificar la salud y el estado mental
     public void AdjustHealth(float value)
     {
-        currentHealth = Mathf.Clamp(currentHealth + value, 0f, 100f);//resto daño a la vida sin dejar que baje de 0
-        if (currentHealth < 0) 
+        currentHealth = Mathf.Clamp(currentHealth + value, 0f, 100f); // Resto daño a la vida sin dejar que baje de 0
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -172,9 +182,4 @@ public class PlayerController : MonoBehaviour
         currentmentalState = Mathf.Clamp(currentmentalState + adjustment, 0f, 100f);
     }
 
-    void Die()
-    {
-        // Lógica para manejar la muerte del personaje
-        Debug.Log("Player has died.");
-    }
 }
