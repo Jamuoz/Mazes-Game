@@ -12,7 +12,7 @@ Material:
   m_Parent: {fileID: 2100000, guid: f486e25e5d2e790489a0381980331fef, type: 2}
   m_ModifiedSerializedProperties: 18
   m_ValidKeywords:
-  - _ALPHABLEND_ON
+  - _ALPHAPREMULTIPLY_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -29,9 +29,9 @@ Material:
     m_Floats:
     - _DstBlend: 10
     - _Glossiness: 0
-    - _Metallic: 1
-    - _Mode: 2
-    - _SrcBlend: 5
+    - _Metallic: 0
+    - _Mode: 3
+    - _SrcBlend: 1
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 0.9150943, g: 0.082013, b: 0.082013, a: 0.42352942}

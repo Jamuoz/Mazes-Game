@@ -12,6 +12,7 @@ public class UiManager : MonoBehaviour
     public Image DelayVida;
     public Image Estamina;
     public Image EstadoMental;
+    //private bool completed=true;
 
     // Referencias
     public PlayerController Player;
@@ -30,15 +31,23 @@ public class UiManager : MonoBehaviour
         Vida.fillAmount = Player.currentHealth / Player.maxHealth;
         Estamina.fillAmount = Player.currentStamina / Player.maxStamina;
         EstadoMental.fillAmount = Player.currentmentalState / Player.maxMentalState;
-        if (DelayVida.fillAmount > Vida.fillAmount)
-        {
-            FadeUpdate();
-        }
+        DelayVida.fillAmount= Player.currentHealth / Player.maxHealth;
+        //if (DelayVida.fillAmount > Vida.fillAmount && completed && Player.currentHealth>0)
+        //{
+
+        //    completed = false;
+        //    StartCoroutine(FadeUpdate());
+        //}
     }
 
-    void FadeUpdate()
-    {
-        DelayVida.DOFillAmount(Vida.fillAmount, delayDuration);
-    }
+    
+    
+    //IEnumerator FadeUpdate()
+    //{
+    //    yield return new WaitForSeconds(0.1f);
+    //    DelayVida.DOFillAmount(Vida.fillAmount, delayDuration).WaitForCompletion();
+    //    completed = true;
 
+        
+    //}
 }

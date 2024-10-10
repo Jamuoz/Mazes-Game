@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,6 +14,7 @@ public class EnemyController : MonoBehaviour
     public float waitTime = 2f;  // Tiempo que espera antes de continuar patrullando
     public Transform player;
 
+    private int LastPoint=-1;
     private int currentPointIndex = 0;
     private NavMeshAgent agent;
     private float waitTimer;
@@ -23,7 +25,7 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.speed = patrolSpeed;
         // Inicia el patrullaje hacia el primer punto
-        agent.destination = patrolPoints[currentPointIndex].position;
+        agent.destination = patrolPoints[GetPoint()].position;
     }
 
     void Update()
@@ -66,11 +68,30 @@ public class EnemyController : MonoBehaviour
 
             if (waitTimer >= waitTime)
             {
+
                 // Selecciona un punto de patrullaje aleatorio
-                currentPointIndex = Random.Range(0, patrolPoints.Length);
-                agent.destination = patrolPoints[currentPointIndex].position;
-                waitTimer = 0f;  // Reinicia el temporizador de espera
+                currentPointIndex = GetPoint();
+                if (currentPointIndex != LastPoint)
+                {
+                    agent.destination = patrolPoints[currentPointIndex].position;
+                    LastPoint = currentPointIndex;
+                    waitTimer = 0f;  // Reinicia el temporizador de espera
+                }
+                else
+                {
+                    waitTime = 0f;
+                    Patrol();
+                    
+                }
+                
             }
         }
+    }
+
+    public int GetPoint()
+    {
+        int point = Random.Range(0, patrolPoints.Length);
+        Debug.Log(point);
+        return point;
     }
 }

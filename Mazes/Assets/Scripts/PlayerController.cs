@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [SerializeField] GameObject panel/*,panelDead*/;
+    [SerializeField] AudioSource Pasos, damage;
     // Variables de estado
+
     public float maxHealth = 100f;
     public float currentHealth;
     public float maxStamina = 100f;
@@ -35,11 +41,7 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         currentmentalState = maxMentalState;
-        SpeedUpdate();
-
-        // Ocultar y bloquear el cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        SpeedUpdate(); 
     }
 
     void Update()
@@ -49,8 +51,45 @@ public class PlayerController : MonoBehaviour
         //Jump(); 
         LookAround();
         HandleStaminaAndHealth();
+        //ReproAudio();
+        ChangePanel();
+
+
     }
 
+    void ChangePanel()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            panel.SetActive(!panel.activeSelf);
+
+        }
+        if (panel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    void ReproAudio()
+    {
+        if (Pasos != null)
+        {
+            if (Input.GetAxisRaw("Horizontal")!=0 || Input.GetAxisRaw("Vertical") !=0)
+            {
+                Pasos.Play();
+            }
+            else
+            {
+                Pasos.Stop();
+            }
+        }
+        
+    }
     void Move()
     {
         float moveX = Input.GetAxisRaw("Horizontal");
@@ -80,6 +119,7 @@ public class PlayerController : MonoBehaviour
         if (moveDirection.magnitude >= 0.1f)
         {
             rb.velocity = moveDirection * moveSpeed + new Vector3(0, rb.velocity.y, 0);
+            
         }
         else
         {
@@ -164,7 +204,8 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Player has died.");
+        DOTween.KillAll();
+        SceneManager.LoadScene("Muerte");
     }
 
     // Métodos para modificar la salud y el estado mental
@@ -174,6 +215,13 @@ public class PlayerController : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+        }
+        if (damage != null )
+        {
+            if (value < 0)
+            {
+                damage.Play();
+            }
         }
     }
 

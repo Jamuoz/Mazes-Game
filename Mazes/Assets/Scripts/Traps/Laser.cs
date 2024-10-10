@@ -18,18 +18,20 @@ public class Laser : MonoBehaviour
         {
             initialPosition.position = transform.position;
         }
-        
-    }
-    private void OnEnable()
-    {
         transform.position = initialPosition.position;
         StartLaserMovement(Hori);
+        
     }
+    //private void OnEnable()
+    //{
+    //    transform.position = initialPosition.position;
+    //    StartLaserMovement(Hori);
+    //}
 
-    private void OnDisable()
-    {
-        transform.DOKill();
-    }
+    //private void OnDisable()
+    //{
+    //    transform.DOKill();
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
@@ -40,7 +42,6 @@ public class Laser : MonoBehaviour
         }
     }
 
-    // Corutina para mover el láser hacia adelante y hacia atrás
     private void StartLaserMovement(bool dire)
     {
         if (!dire)
