@@ -6,9 +6,10 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
-
-    [SerializeField] GameObject panel/*,panelDead*/;
+    //feedback
+    [SerializeField] GameObject panel;
     [SerializeField] AudioSource Pasos, damage;
+    bool vActive, hActive;
     // Variables de estado
 
     public float maxHealth = 100f;
@@ -51,7 +52,7 @@ public class PlayerController : MonoBehaviour
         //Jump(); 
         LookAround();
         HandleStaminaAndHealth();
-        //ReproAudio();
+        ReproAudio();
         ChangePanel();
 
 
@@ -79,14 +80,33 @@ public class PlayerController : MonoBehaviour
     {
         if (Pasos != null)
         {
-            if (Input.GetAxisRaw("Horizontal")!=0 || Input.GetAxisRaw("Vertical") !=0)
+            if (Input.GetButtonDown("Horizontal"))
             {
+                hActive = true;
                 Pasos.Play();
             }
-            else
+            if (Input.GetButtonDown("Vertical"))
             {
-                Pasos.Stop();
+                vActive = true;
+                Pasos.Play();
             }
+            if (Input.GetButtonUp("Horizontal"))
+            {
+                hActive = false;
+                if (!vActive)
+                {
+                    Pasos.Pause();
+                }
+            }
+            if (Input.GetButtonUp("Vertical"))
+            {
+                vActive = false;
+                if (!hActive)
+                {
+                    Pasos.Pause();
+                }
+            }
+
         }
         
     }
