@@ -7,7 +7,7 @@ using DG.Tweening;
 public class PlayerController : MonoBehaviour
 {
     //feedback
-    [SerializeField] GameObject panel;
+    //[SerializeField] GameObject panel;
     [SerializeField] AudioSource Pasos, damage;
     bool vActive, hActive;
     // Variables de estado
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Collider playerCollider; 
 
-    // Variables para la cámara
+    // Variables para la cï¿½mara
     public Transform playerCamera;
     public float mouseSensitivity = 100f;
     private float xRotation = 0f;
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     void ChangePanel()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        /*if (Input.GetKeyDown(KeyCode.Escape))
         {
             panel.SetActive(!panel.activeSelf);
 
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-        }
+        }*/
     }
     void ReproAudio()
     {
@@ -161,14 +161,14 @@ public class PlayerController : MonoBehaviour
 
     void LookAround()
     {
-        // Rotación en el eje Y (girar el personaje)
+        // Rotaciï¿½n en el eje Y (girar el personaje)
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         transform.Rotate(Vector3.up * mouseX);
 
-        // Rotación en el eje X (girar la cámara)
+        // Rotaciï¿½n en el eje X (girar la cï¿½mara)
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Limitar la rotación en el eje X
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f); // Limitar la rotaciï¿½n en el eje X
 
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
@@ -194,13 +194,13 @@ public class PlayerController : MonoBehaviour
             currentStamina += Time.deltaTime * 5f;
         }
 
-        // Si la estamina está vacía, empieza a reducir el estado mental
+        // Si la estamina estï¿½ vacï¿½a, empieza a reducir el estado mental
         if (currentStamina <= 0 && currentmentalState > 0)
         {
             currentmentalState -= Time.deltaTime * 4f;
             if (currentmentalState <= 0)
             {
-                currentHealth -= Time.deltaTime * 10f;  // Reduce salud si el estado mental se vacía
+                currentHealth -= Time.deltaTime * 10f;  // Reduce salud si el estado mental se vacï¿½a
                 if (currentHealth <= 0)
                 {
                     Die();
@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour
     }
     void CheckIfGrounded()
     {
-        // Define la posición desde la cual lanzar el rayo (desde el centro inferior del collider)
+        // Define la posiciï¿½n desde la cual lanzar el rayo (desde el centro inferior del collider)
         Vector3 bottomCenter = new Vector3(playerCollider.bounds.center.x, playerCollider.bounds.min.y, playerCollider.bounds.center.z);
         float distanceToGround = 0.2f;
         isGrounded = Physics.Raycast(bottomCenter, Vector3.down, distanceToGround);
@@ -228,10 +228,10 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene("Muerte");
     }
 
-    // Métodos para modificar la salud y el estado mental
+    // Mï¿½todos para modificar la salud y el estado mental
     public void AdjustHealth(float value)
     {
-        currentHealth = Mathf.Clamp(currentHealth + value, 0f, 100f); // Resto daño a la vida sin dejar que baje de 0
+        currentHealth = Mathf.Clamp(currentHealth + value, 0f, 100f); // Resto daï¿½o a la vida sin dejar que baje de 0
         if (currentHealth <= 0)
         {
             Die();

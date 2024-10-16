@@ -72,28 +72,6 @@ MonoBehaviour:
   lumContrib:
     overrideState: 1
     value: 0
---- !u!114 &-566416567668491422
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b94fcd11afffcb142908bfcb1e261fba, type: 3}
-  m_Name: MotionBlur
-  m_EditorClassIdentifier: 
-  active: 0
-  enabled:
-    overrideState: 1
-    value: 1
-  shutterAngle:
-    overrideState: 1
-    value: 54
-  sampleCount:
-    overrideState: 1
-    value: 7
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,8 +89,8 @@ MonoBehaviour:
   - {fileID: 114349369558508098}
   - {fileID: 114421483817410982}
   - {fileID: -2876430231233981703}
-  - {fileID: -566416567668491422}
   - {fileID: -7729092532944557037}
+  - {fileID: 8399805799387394685}
 --- !u!114 &114349369558508098
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1523,3 +1501,37 @@ MonoBehaviour:
   quality:
     overrideState: 0
     value: 2
+--- !u!114 &8399805799387394685
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b77c5407dc277943b591ade9e6b18c5, type: 3}
+  m_Name: LensDistortion
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  intensity:
+    overrideState: 1
+    value: -22
+  intensityX:
+    overrideState: 0
+    value: 1
+  intensityY:
+    overrideState: 0
+    value: 1
+  centerX:
+    overrideState: 0
+    value: 0
+  centerY:
+    overrideState: 0
+    value: 0
+  scale:
+    overrideState: 0
+    value: 1

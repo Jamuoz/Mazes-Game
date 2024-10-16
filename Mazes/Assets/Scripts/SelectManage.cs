@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,35 +5,22 @@ public class SelectManage : MonoBehaviour
 {
     //public GameObject player;
     public GameObject panelPause;
+    bool OpenMenu =false;
     //public SelectManage instance;
     bool pause=false;
-    // Start is called before the first frame update
-    //void Awake()
-    //{
-    //    if (instance == null)
-    //    {
-    //        instance = this;
-    //        DontDestroyOnLoad(gameObject);
-    //    }
-    //    else
-    //    {
-    //        Destroy(gameObject);
-    //    }
-
-    //}
+    
     private void Awake()
     {
-        if(SceneManager.GetActiveScene().name == "Muerte" || SceneManager.GetActiveScene().name== "Victoria")
-        {
-            ViewCursor();
-        }
+        //bloquea el cursor si esat en la escena nombrada y lo desbloquea si no
+        if(SceneManager.GetActiveScene().name == "Maze" ) HideCursor();else ViewCursor();
     }
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape)) 
+        if (Input.GetKeyUp(KeyCode.Escape) && !OpenMenu) 
         {
-            TimeManager();
+            PauseGame();
         }
+        
     }
 
     public void TimeManager()
@@ -50,10 +35,18 @@ public class SelectManage : MonoBehaviour
             Time.timeScale = 1f;
         }
     }
+
+    public void UpdateMenuOpen(bool val){
+        OpenMenu =val;
+    }
     public void ViewCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+    public void HideCursor(){
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     public void SelectedLife()
     {
@@ -67,7 +60,7 @@ public class SelectManage : MonoBehaviour
 
     public void SelectReanudar()
     {
-        Debug.Log("funciona");
+        TimeManager(); HideCursor();
     }
     public void ExitGame()
     {
@@ -81,6 +74,8 @@ public class SelectManage : MonoBehaviour
     public void OptionsMenu()
     {
         Debug.Log("funciona");
+        ViewCursor();
+        OpenMenu =true;
     }
     public void PauseGame()
     {
@@ -97,5 +92,7 @@ public class SelectManage : MonoBehaviour
         SceneManager.LoadScene("MenuInicio");
         //ViewCursor();
     }
+
+   
 
 }
