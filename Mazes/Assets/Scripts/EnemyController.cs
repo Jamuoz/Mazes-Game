@@ -7,7 +7,8 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     public Transform[] patrolPoints;  // Puntos de patrulla
-    public float patrolSpeed = 3.5f;
+    [SerializeField] private float patrolSpeed = 3.5f;
+    [SerializeField] private GameObject respawn,enemySpawn;
     public float chaseSpeed = 5f;
     public float detectionRange = 10f;
     public float loseRange = 15f;
@@ -88,6 +89,15 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            GameObject player= collision.gameObject;
+            player.transform.position= respawn.transform.position;
+            transform.position= enemySpawn.transform.position;  
+        }
+    }
     public int GetPoint()
     {
         int point = Random.Range(0, patrolPoints.Length);

@@ -14,6 +14,7 @@ public class ItemAnisedad : MonoBehaviour
     [SerializeField] private string frase;
     [SerializeField] private GameObject sprite;
     [SerializeField] private GameObject ubicacionCanvas;
+    [SerializeField] private Light linterna;
     public float velocidadEscritura;
 
     private void Awake()
@@ -41,6 +42,7 @@ public class ItemAnisedad : MonoBehaviour
             // Solo muestra la recompensa si aún no se ha recogido y es el jugador
             if (!IsReward && other.CompareTag("Player"))
             {
+                linterna.intensity = 1f;
                 if (Input.GetKeyDown(KeyCode.F)) // Verifica que el jugador presione "F"
                 {
                     sprite.SetActive(false);
@@ -53,7 +55,13 @@ public class ItemAnisedad : MonoBehaviour
             PositionUpdate();
         }
     }
-
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            linterna.intensity = 3f;
+        }
+    }
     private void ShowItemReward(GameObject other)
     {
         // Activa el canvas y lo posiciona
@@ -82,6 +90,7 @@ public class ItemAnisedad : MonoBehaviour
 
     private void ActiveEffects()
     {
+        linterna.intensity = 3f;
         // Aquí puedes agregar efectos de sonido, partículas, etc.
         Destroy(gameObject, 1f);  // Destruye el ítem después de 1 segundo
     }
